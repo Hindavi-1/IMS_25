@@ -31,6 +31,10 @@ const publicApiPaths = [
   "/api/debug/diagnostic",
   "/api/debug/direct-login",
   "/api/debug/fix-database",
+  "/api/auth/forgot-password",
+  "/api/auth/reset-password",
+  "/api/auth/validate-reset-token",
+  "/api/auth/setup-reset-table",
 ];
 
 // Use env variable with fallback for JWT secret
@@ -130,6 +134,7 @@ export async function middleware(request: NextRequest) {
 
   // If no token and not a public path, redirect to login
   if (!sessionToken) {
+  // if(false){
     // For API routes, return 401
     if (pathname.startsWith("/api/")) {
       return NextResponse.json(

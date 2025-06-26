@@ -67,7 +67,7 @@ If you're using Gmail as your email provider, follow these steps:
 After setting up the environment variables:
 
 1. Restart your development server
-2. Access the test URL: `http://localhost:3001/api/debug/test-email`
+2. Access the test URL: `http://localhost:3000/api/debug/test-email`
 3. Check your email for the test message
 4. Try the "Forgot Password" feature
 
