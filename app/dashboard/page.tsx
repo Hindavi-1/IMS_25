@@ -74,8 +74,8 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<"naac" | "nba">("naac");
   const [generatingReport, setGeneratingReport] = useState(false);
   const [reportType, setReportType] = useState<
-    "full" | "faculty" | "students" | "research"
-  >("full");
+    "full" | "faculty" | "student" | "research"
+  >("faculty");
   const [reportMessage, setReportMessage] = useState<{
     type: "success" | "error";
     text: string;
@@ -268,123 +268,123 @@ export default function DashboardPage() {
     );
   }
 
-  if (!user) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-xl font-semibold mb-2">Not Authenticated</h1>
-          <p className="text-gray-500 mb-4">
-            Please log in to access the dashboard
-          </p>
+  // if (!user) {
+  //   return (
+  //     <div className="flex min-h-screen items-center justify-center">
+  //       <div className="text-center">
+  //         <h1 className="text-xl font-semibold mb-2">Not Authenticated</h1>
+  //         <p className="text-gray-500 mb-4">
+  //           Please log in to access the dashboard
+  //         </p>
 
-          <div className="flex flex-col space-y-4">
-            <Link
-              href="/login"
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Go to Login
-            </Link>
+  //         <div className="flex flex-col space-y-4">
+  //           <Link
+  //             href="/login"
+  //             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+  //           >
+  //             Go to Login
+  //           </Link>
 
-            <button
-              onClick={async () => {
-                try {
-                  setLoadingDiag(true);
-                  // Call the bypass-auth endpoint for development use
-                  const response = await fetch("/api/debug/bypass-auth", {
-                    method: "GET",
-                    credentials: "include", // Important: This ensures cookies are sent and stored
-                    headers: {
-                      Accept: "application/json",
-                      "Content-Type": "application/json",
-                    },
-                  });
+  //           <button
+  //             onClick={async () => {
+  //               try {
+  //                 setLoadingDiag(true);
+  //                 // Call the bypass-auth endpoint for development use
+  //                 const response = await fetch("/api/debug/bypass-auth", {
+  //                   method: "GET",
+  //                   credentials: "include", // Important: This ensures cookies are sent and stored
+  //                   headers: {
+  //                     Accept: "application/json",
+  //                     "Content-Type": "application/json",
+  //                   },
+  //                 });
 
-                  if (response.ok) {
-                    const data = await response.json();
-                    // Store user data in sessionStorage for immediate use
-                    if (data.success && data.user) {
-                      sessionStorage.setItem(
-                        "authUser",
-                        JSON.stringify(data.user)
-                      );
-                      // Force reload to apply the new authentication state
-                      window.location.reload();
-                    } else {
-                      alert("Auth bypass returned success=false");
-                    }
-                  } else {
-                    alert("Bypass auth failed: " + response.statusText);
-                  }
-                } catch (error) {
-                  alert(
-                    "Error: " +
-                      (error instanceof Error ? error.message : String(error))
-                  );
-                } finally {
-                  setLoadingDiag(false);
-                }
-              }}
-              className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-            >
-              Try Auth Bypass (Dev Mode)
-            </button>
+  //                 if (response.ok) {
+  //                   const data = await response.json();
+  //                   // Store user data in sessionStorage for immediate use
+  //                   if (data.success && data.user) {
+  //                     sessionStorage.setItem(
+  //                       "authUser",
+  //                       JSON.stringify(data.user)
+  //                     );
+  //                     // Force reload to apply the new authentication state
+  //                     window.location.reload();
+  //                   } else {
+  //                     alert("Auth bypass returned success=false");
+  //                   }
+  //                 } else {
+  //                   alert("Bypass auth failed: " + response.statusText);
+  //                 }
+  //               } catch (error) {
+  //                 alert(
+  //                   "Error: " +
+  //                     (error instanceof Error ? error.message : String(error))
+  //                 );
+  //               } finally {
+  //                 setLoadingDiag(false);
+  //               }
+  //             }}
+  //             className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+  //           >
+  //             Try Auth Bypass (Dev Mode)
+  //           </button>
 
-            <button
-              onClick={async () => {
-                try {
-                  setLoadingDiag(true);
-                  // Call the new auth-fix endpoint
-                  const response = await fetch("/api/debug/auth-fix", {
-                    method: "GET",
-                    credentials: "include",
-                    headers: {
-                      Accept: "application/json",
-                      "Content-Type": "application/json",
-                    },
-                  });
+  //           <button
+  //             onClick={async () => {
+  //               try {
+  //                 setLoadingDiag(true);
+  //                 // Call the new auth-fix endpoint
+  //                 const response = await fetch("/api/debug/auth-fix", {
+  //                   method: "GET",
+  //                   credentials: "include",
+  //                   headers: {
+  //                     Accept: "application/json",
+  //                     "Content-Type": "application/json",
+  //                   },
+  //                 });
 
-                  if (response.ok) {
-                    const data = await response.json();
-                    // Store user data in sessionStorage
-                    if (data.success && data.user) {
-                      sessionStorage.setItem(
-                        "authUser",
-                        JSON.stringify(data.user)
-                      );
-                      alert("Authentication fixed! Reloading page...");
-                      // Force reload with a slight delay
-                      setTimeout(() => window.location.reload(), 500);
-                    } else {
-                      alert("Auth fix returned success=false");
-                    }
-                  } else {
-                    alert("Auth fix failed: " + response.statusText);
-                  }
-                } catch (error) {
-                  alert(
-                    "Error: " +
-                      (error instanceof Error ? error.message : String(error))
-                  );
-                } finally {
-                  setLoadingDiag(false);
-                }
-              }}
-              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-            >
-              Fix Authentication (Recommended)
-            </button>
-          </div>
+  //                 if (response.ok) {
+  //                   const data = await response.json();
+  //                   // Store user data in sessionStorage
+  //                   if (data.success && data.user) {
+  //                     sessionStorage.setItem(
+  //                       "authUser",
+  //                       JSON.stringify(data.user)
+  //                     );
+  //                     alert("Authentication fixed! Reloading page...");
+  //                     // Force reload with a slight delay
+  //                     setTimeout(() => window.location.reload(), 500);
+  //                   } else {
+  //                     alert("Auth fix returned success=false");
+  //                   }
+  //                 } else {
+  //                   alert("Auth fix failed: " + response.statusText);
+  //                 }
+  //               } catch (error) {
+  //                 alert(
+  //                   "Error: " +
+  //                     (error instanceof Error ? error.message : String(error))
+  //                 );
+  //               } finally {
+  //                 setLoadingDiag(false);
+  //               }
+  //             }}
+  //             className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+  //           >
+  //             Fix Authentication (Recommended)
+  //           </button>
+  //         </div>
 
-          {diagnostic && (
-            <div className="mt-8 p-4 bg-gray-100 rounded text-left max-w-lg mx-auto text-xs overflow-auto">
-              <h2 className="font-semibold mb-2">Diagnostic Info:</h2>
-              <pre>{JSON.stringify(diagnostic, null, 2)}</pre>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
+  //         {diagnostic && (
+  //           <div className="mt-8 p-4 bg-gray-100 rounded text-left max-w-lg mx-auto text-xs overflow-auto">
+  //             <h2 className="font-semibold mb-2">Diagnostic Info:</h2>
+  //             <pre>{JSON.stringify(diagnostic, null, 2)}</pre>
+  //           </div>
+  //         )}
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <MainLayout>
@@ -415,15 +415,15 @@ export default function DashboardPage() {
               value={reportType}
               onChange={(e) =>
                 setReportType(
-                  e.target.value as "full" | "faculty" | "students" | "research"
+                  e.target.value as "full" | "faculty" | "student" | "research"
                 )
               }
               className="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               disabled={generatingReport}
             >
-              <option value="full">Full Report</option>
               <option value="faculty">Faculty Report</option>
-              <option value="students">Students Report</option>
+              <option value="full">Full Report</option>
+              <option value="student">student Report</option>
               <option value="research">Research Output Report</option>
             </select>
             <button
@@ -462,7 +462,7 @@ export default function DashboardPage() {
             bgColor="bg-gradient-to-br from-indigo-50 to-white"
           />
           <StatsCard
-            title="Total Students"
+            title="Total student"
             value={formatNumber(totalStudents)}
             icon={<AcademicCapIcon className="h-6 w-6 text-purple-600" />}
             trend="up"
@@ -572,7 +572,7 @@ export default function DashboardPage() {
                 />
               </ChartCard>
               <ChartCard
-                title="Students by Department"
+                title="student by Department"
                 className="bg-white shadow-md hover:shadow-lg transition-shadow"
                 useGradient={true}
                 gradientFrom="from-purple-600"
@@ -639,7 +639,7 @@ export default function DashboardPage() {
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
-                        Students
+                        student
                       </th>
                       <th
                         scope="col"
@@ -690,42 +690,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Department Comparison Charts */}
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              <ChartCard
-                title="Faculty Designation Distribution"
-                subtitle="Department-wise breakdown of faculty by designation"
-                className="bg-white shadow-md hover:shadow-lg transition-shadow"
-                useGradient={true}
-                gradientFrom="from-indigo-600"
-                gradientTo="to-blue-600"
-              >
-                <div className="h-80">
-                  {/* In a real implementation, add a stacked bar chart here */}
-                  <div className="flex h-full items-center justify-center">
-                    <p className="text-gray-500">
-                      Faculty designation chart will be displayed here
-                    </p>
-                  </div>
-                </div>
-              </ChartCard>
-              <ChartCard
-                title="Research Output Comparison"
-                subtitle="Department-wise research projects and publications"
-                className="bg-white shadow-md hover:shadow-lg transition-shadow"
-                useGradient={true}
-                gradientFrom="from-purple-600"
-                gradientTo="to-fuchsia-600"
-              >
-                <div className="h-80">
-                  {/* In a real implementation, add a grouped bar chart here */}
-                  <div className="flex h-full items-center justify-center">
-                    <p className="text-gray-500">
-                      Research output chart will be displayed here
-                    </p>
-                  </div>
-                </div>
-              </ChartCard>
-            </div>
+                        
           </div>
         )}
       </div>
